@@ -15,7 +15,7 @@
 // @match        http*://bbs.hupu.com/*.html
 // @match        http*://jingyan.baidu.com/article/*
 // @match        http*://dnf.qq.com/gift.shtml
-// @match        https://www.pianku.tv/py/*.html
+// @match        http*://www.pianku.tv/py/*
 // ==/UserScript==
 
 var jQ = $.noConflict(true);
