@@ -6,7 +6,7 @@
 // @author       XanderYe
 // @require      http://lib.baomitu.com/clipboard.js/1.7.1/clipboard.min.js
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
-// @updateURL    https://github.com/XanderYe/xander-tool/raw/master/src/main/resources/js/optimize.user.js
+// @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/optimize.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        http*://www.zhihu.com/question/*
 // @match        http*://*.csdn.net/*
