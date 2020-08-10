@@ -14,7 +14,7 @@
 var jQ = $.noConflict(true);
 jQ(function($){
 
-  initButton();
+  setTimeout(initButton, 500);
 
   function initButton() {
     var parentDom;
