@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         视频网站嗅探
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  获取视频网站m3u8下载链接，支持腾讯视频和爱奇艺视频；只能获取当前账户支持播放的视频流
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
@@ -27,9 +27,7 @@ jQ(function ($) {
       btn = $('<button class="txp_btn video-sniffer">' + svg[0].outerHTML + '<txp data-role="txp-ui-pip-btn-label" class="txp_icon_text">下载</txp></button>');
       parentDom = $(".txp_top_btns");
       clickEvent = function () {
-        var title = PLAYER._DownloadMonitor.context.dataset.title;
-        var src = PLAYER._DownloadMonitor.context.dataset.ckc ? PLAYER._DownloadMonitor.context.dataset.currentVideoUrl : PLAYER._DownloadMonitor.context.dataset.currentVideoUrl.replace(/:.*qq.com/g, "://defaultts.tc.qq.com/defaultts.tc.qq.com");
-        var link = document.createElement('a');link.style.display = 'none';link.href = src;document.body.appendChild(link);link.click();document.body.removeChild(link);
+        var m3u8Content=PLAYER._DownloadMonitor.context.dataset.playList[0].m3u8;var blob=new Blob([m3u8Content],{type:"text/plain"});var url=URL.createObjectURL(blob);var title=PLAYER._DownloadMonitor.context.dataset.title+"[v+a].m3u8";var aLink=document.createElement("a");aLink.href=url;aLink.download=title;aLink.style.display="none";var event;if(window.MouseEvent){event=new MouseEvent("click")}else{event=document.createEvent("MouseEvents");event.initMouseEvent("click",true,false,window,0,0,0,0,0,false,false,false,false,0,null)}aLink.dispatchEvent(event);
       }
     } else if (website("iqiyi")) {
       parentDom = $(".iqp-screenshot-type ul");
