@@ -8,6 +8,7 @@
 // @updateURL    https://github.com/XanderYe/xander-tool/raw/master/src/main/resources/js/zhehuo.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        *://www.xincanshu.com/*.html
+// @match        *://www.xincanshu.com/*/pk*
 // ==/UserScript==
 
 var newStyle = document.createElement("style");
