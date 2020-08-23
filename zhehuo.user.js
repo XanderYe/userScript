@@ -11,6 +11,6 @@
 // ==/UserScript==
 
 var newStyle = document.createElement("style");
-var newNode = document.createTextNode(".denglutishi, .logobq, .zheceng {display: none} .paofenjietu {filter: unset !important} .sy{background-image: unset !important}");
+var newNode = document.createTextNode(".denglutishi, .logobq, .zheceng {display: none} .paofenjietu, #chart-wrapper {filter: unset !important} .sy{background-image: unset !important}");
 newStyle.appendChild(newNode);
 document.head.appendChild(newStyle);
