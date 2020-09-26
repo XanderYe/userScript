@@ -6,7 +6,7 @@
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
 // @require      https://lib.baomitu.com/snap.svg/0.5.1/snap.svg-min.js
-// @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/src/main/resources/js/baidupan.user.js
+// @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/baidupan.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        *://pan.baidu.com/*
 // @match        *://yun.baidu.com/*
