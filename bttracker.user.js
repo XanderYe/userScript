@@ -5,7 +5,7 @@
 // @description  格式化输出bt-tracker，用于aria2
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
-// @updateURL    https://github.com/XanderYe/xander-tool/raw/master/src/main/resources/js/bttracker.user.js
+// @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/src/main/resources/js/bttracker.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        https://ngosang.github.io/trackerslist/trackers_best.txt
 // ==/UserScript==
