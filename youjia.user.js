@@ -26,8 +26,8 @@ jQ(function($){
         for (var j = 1; j < carItemLen; j++) {
           var a = $(".car-item").eq(j - 1);
           var b = $(".car-item").eq(j);
-          var itemA = a.children(".item-subname").eq(i).text();
-          var itemB = b.children(".item-subname").eq(i).text();
+          var itemA = a.children(".item-subname").eq(i).html();
+          var itemB = b.children(".item-subname").eq(i).html();
           if (itemA != itemB) {
             equal = false;
             break;
@@ -35,7 +35,10 @@ jQ(function($){
         }
         if (!equal) {
           for (var j = 0; j < carItemLen; j++) {
-            $(".car-item").eq(j).children(".item-subname").eq(i).css("color", "red");
+            var item = $(".car-item").eq(j).children(".item-subname").eq(i);
+            item.css("color", "red");
+            item.find(".parameter-std").css("background", "red");
+            item.find(".parameter-line").css("border-bottom", "1px solid red");
           }
         }
       }
