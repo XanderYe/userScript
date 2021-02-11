@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         去广告/去弹窗/优化
 // @namespace    http://tampermonkey.net/
-// @version      1.8
+// @version      1.9
 // @description  去掉各个网站的登录弹窗等辣鸡信息，优化某些功能
 // @author       XanderYe
 // @require      http://lib.baomitu.com/clipboard.js/1.7.1/clipboard.min.js
@@ -18,6 +18,7 @@
 // @match        http*://www.pianku.tv/py/*
 // @match        http*://www.pianku.tv/py/*
 // @match        http*://leetcode-cn.com/problems/*
+// @match        http*://www.770dy.com/*/*.html
 // ==/UserScript==
 
 var jQ = $.noConflict(true);
@@ -90,7 +91,28 @@ jQ(function($){
                 e.stopPropagation();
             }
         });
+    } else if (website("770dy")) {
+        $("body").on("click", ".fed-conv-btn", function () {
+            console.log($(this).html())
+            if ($(this).html() == "影片下载") {
+                var linkDoms = $("body > div.fed-main-info.fed-min-width > div > div > div.fed-main-left.fed-col-xs12.fed-col-md9 > div > div.fed-conv-info.fed-part-layout.fed-margin-right.fed-back-whits > div.fed-conv-deta > div.fed-conv-boxs.fed-conv-down.fed-tabs-info.fed-tabs-down.fed-conv-double.fed-hidden.fed-show > div:nth-child(2) > div.fed-tabs-foot > ul > li > div.fed-conv-input.fed-col-xs4.fed-col-sm3 > input");
+                var linkArray = [];
+                for (linkDom of linkDoms) {
+                    linkArray.push($(linkDom).val());
+                }
+                var links = linkArray.join("\r\n");
+                $(".fed-tabs-head").eq(3).find(".fed-tabs-top").eq(0).append('<a rel="nofollow" id="cpybtn" class="fed-tabs-btn fed-btns-info fed-rims-info fed-part-eone fed-btns-green" href="javascript:;" data-clipboard-text="' + links + '" style="width: 140px;position: absolute;top: 8px;left: 60px">一键复制链接</a>');
+            }
+        })
+        var clipboard = new Clipboard('#cpybtn');
+        clipboard.on('success', function(e) {
+            alert("复制成功");
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
     }
+
     if (newNode !== undefined) {
         newStyle.appendChild(newNode);
         document.head.appendChild(newStyle);
