@@ -38,6 +38,7 @@ jQ(function($){
     initCompareBtn();
     bindEmpty();
     initCheckbox();
+    bindSelect();
   }
 
   function initCompareBtn() {
@@ -49,7 +50,7 @@ jQ(function($){
     }
   }
 
-  function initCheckbox() {
+  function initCheckbox(callback) {
     let checkedModels = GM_getValue("checkedModels");
     getCompareModel( (data) => {
       let list = data.Result.arrData.list;
@@ -70,9 +71,11 @@ jQ(function($){
       }
       bindCheckbox();
 
-      bindSelect();
-
       changeCompareBtnStatus();
+
+      if (callback) {
+        callback();
+      }
     });
   }
 
@@ -137,8 +140,21 @@ jQ(function($){
   }
 
   function bindSelect() {
-    $(".rtl").on("click", ".content-model .series", function () {
-      console.log("选择");
+    $(".selector-title").unbind().bind("click", function () {
+      $(".content-model").on("click", ".series", function () {
+        let name = $(this).html();
+        setTimeout(() => {
+          initCheckbox(() => {
+            let itemDom = $(".selected .item-name");
+            for (let i = 0; i < itemDom.length; i++) {
+              if (itemDom.eq(i).html() == name) {
+                dom.prev().find(".select-box").attr("checked", true);
+                break;
+              }
+            }
+          });
+        }, 100)
+      })
     })
   }
 
