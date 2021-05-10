@@ -15,8 +15,6 @@
 // @match        http*://bbs.hupu.com/*.html
 // @match        http*://jingyan.baidu.com/article/*
 // @match        http*://dnf.qq.com/gift.shtml
-// @match        http*://www.pianku.tv/py/*
-// @match        http*://www.pianku.tv/py/*
 // @match        http*://leetcode-cn.com/problems/*
 // @match        http*://www.770dy.com/*/*.html
 // @match        http*://*.pcauto.com.cn/*
@@ -75,17 +73,6 @@ jQ(function($){
         clipboard.on('error', function(e) {
             console.log(e);
         });
-    } else if (website("pianku")) {
-        remove();
-        function remove() {
-            if ($("#pp").length != 0) {
-                adremove();
-            } else {
-                setTimeout(function () {
-                    remove();
-                }, 500);
-            }
-        }
     } else if (website("leetcode")) {
         [...document.querySelectorAll('*')].forEach(item=>{
             item.oncopy = function(e) {
