@@ -190,6 +190,9 @@ jQ(function($){
 
   function addCss() {
     let style = `
+      .el-drawer__container .drawer-content {
+        overflow-y: auto;
+      }
       .c-checkbox--input {
         position: relative; 
         vertical-align: middle; 
