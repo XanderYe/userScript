@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         下载国标加密文档
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  gb688.cn支持下载加密文档
+// @version      0.2
+// @description  支持部分国标文档网下载加密文档
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
 // @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/gbpdf.user.js
@@ -16,6 +16,7 @@ jQ(function($){
   init();
 
   let fileBlob;
+  let filename;
 
   function init() {
     if (website("gb688")) {
@@ -51,10 +52,17 @@ jQ(function($){
       if (downloadBtn.length != 0) {
         downloadBtn.css({"color": "white", "cursor": "pointer"});
         downloadBtn.unbind("click").bind("click", function () {
+          download();
+        })
+        $(".fwr-rb-tab[component-name=component-5]").append('<li component-name="component-19"><div class="fwr_layout_flow horizontal gap_md" id="download-btn"><div class="fwr_layout_flow_item"><a class="fwr_button" component-name="component-1f"><i class="fwr-rb-icons-32 fwr-rb-toolbar-download-32"></i><span data-i18n="PCLng.ToolBar.Download" class="text">下载</span></a></div></div></li>');
+        $("#download-btn").unbind("click").bind("click", function () {
+          download();
+        })
+        function download() {
           var pdf = $(".current[data-role=docProperties]").find(".fwr-rb-file-table2").eq(0).find("td").eq(1).html();
           var url = "http://jjg.spc.org.cn/resmea/view/" + pdf.substring(0, pdf.lastIndexOf("."));
           downloadFile(url, enc);
-        })
+        }
       } else {
         setTimeout(function () {
           init();
@@ -78,6 +86,9 @@ jQ(function($){
       xhr.responseType = "blob";
       xhr.onload = function () {
         if (this.status === 201) {
+          var headers = getHeaders(xhr.getAllResponseHeaders());
+          var contentDisposition = headers['content-disposition'];
+          filename = contentDisposition.substring(contentDisposition.indexOf("filename=\"") + 10, contentDisposition.length - 1);
           fileBlob = this.response;
           savePdf();
         }
@@ -89,11 +100,20 @@ jQ(function($){
   function savePdf() {
     var link = document.createElement('a');
     link.href = window.URL.createObjectURL(fileBlob, { type: 'application/pdf;charset=utf-8'});
-    link.download = "document.pdf";
+    link.download = filename || "document.pdf";
     link.style.display = 'none';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  function getHeaders(headersStr) {
+    var headers = {};
+    for (let headerStr of headersStr.substring(1, headersStr.length - 2).split("\r\n")) {
+      let headerStrs = headerStr.split(":");
+      headers[headerStrs[0]] = headerStrs[1].substring(1);
+    }
+    return headers;
   }
 
   function getUrlParam(name) {
