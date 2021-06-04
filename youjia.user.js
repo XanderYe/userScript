@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         有驾对比增强
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  有驾对比增强，支持对比列表勾选车型对比
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
 // @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/youjia.user.js
 // @supportURL   https://www.xanderye.cn/
-// @match        http*://youjia.baidu.com/view/carTrain*
+// @match        http*://www.yoojia.com/s-*
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_addStyle
@@ -38,6 +38,7 @@ jQ(function($){
     initCompareBtn();
     bindEmpty();
     initCheckbox();
+    bindSelect();
   }
 
   function initCompareBtn() {
@@ -49,7 +50,7 @@ jQ(function($){
     }
   }
 
-  function initCheckbox() {
+  function initCheckbox(callback) {
     let checkedModels = GM_getValue("checkedModels");
     getCompareModel( (data) => {
       let list = data.Result.arrData.list;
@@ -70,9 +71,11 @@ jQ(function($){
       }
       bindCheckbox();
 
-      bindSelect();
-
       changeCompareBtnStatus();
+
+      if (callback) {
+        callback();
+      }
     });
   }
 
@@ -99,7 +102,7 @@ jQ(function($){
       let modelIds = getModelIds();
       GM_setValue("checkedModels", modelIds);
       let open = window.open('_blank');
-      open.location = "https://youjia.baidu.com/view/constrast?type=model&modelIds=" + modelIds.join(",");
+      open.location = "/constrast?type=model&modelIds=" + modelIds.join(",");
     })
   }
 
@@ -137,8 +140,21 @@ jQ(function($){
   }
 
   function bindSelect() {
-    $(".rtl").on("click", ".content-model .series", function () {
-      console.log("选择");
+    $(".selector-title").unbind().bind("click", function () {
+      $(".content-model").on("click", ".series", function () {
+        let name = $(this).html();
+        setTimeout(() => {
+          initCheckbox(() => {
+            let itemDom = $(".selected .item-name");
+            for (let i = 0; i < itemDom.length; i++) {
+              if (itemDom.eq(i).html() == name) {
+                dom.prev().find(".select-box").attr("checked", true);
+                break;
+              }
+            }
+          });
+        }, 100)
+      })
     })
   }
 
@@ -152,7 +168,7 @@ jQ(function($){
 
   function getCompareModel(callback) {
     $.ajax({
-      url: "/compare/getmodel?token=1_526c1239fc0b0512a2bd13ac6b962f5f",
+      url: "/api/compare/getmodel?token=1_526c1239fc0b0512a2bd13ac6b962f5f",
       success: function (data) {
         if (callback) {
           callback(data);
@@ -174,6 +190,9 @@ jQ(function($){
 
   function addCss() {
     let style = `
+      .el-drawer__container .drawer-content {
+        overflow-y: auto;
+      }
       .c-checkbox--input {
         position: relative; 
         vertical-align: middle; 

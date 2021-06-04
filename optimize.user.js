@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         去广告/去弹窗/优化
 // @namespace    http://tampermonkey.net/
-// @version      1.9
+// @version      2.0
 // @description  去掉各个网站的登录弹窗等辣鸡信息，优化某些功能
 // @author       XanderYe
 // @require      http://lib.baomitu.com/clipboard.js/1.7.1/clipboard.min.js
@@ -15,10 +15,9 @@
 // @match        http*://bbs.hupu.com/*.html
 // @match        http*://jingyan.baidu.com/article/*
 // @match        http*://dnf.qq.com/gift.shtml
-// @match        http*://www.pianku.tv/py/*
-// @match        http*://www.pianku.tv/py/*
 // @match        http*://leetcode-cn.com/problems/*
 // @match        http*://www.770dy.com/*/*.html
+// @match        http*://*.pcauto.com.cn/*
 // ==/UserScript==
 
 var jQ = $.noConflict(true);
@@ -74,17 +73,6 @@ jQ(function($){
         clipboard.on('error', function(e) {
             console.log(e);
         });
-    } else if (website("pianku")) {
-        remove();
-        function remove() {
-            if ($("#pp").length != 0) {
-                adremove();
-            } else {
-                setTimeout(function () {
-                    remove();
-                }, 500);
-            }
-        }
     } else if (website("leetcode")) {
         [...document.querySelectorAll('*')].forEach(item=>{
             item.oncopy = function(e) {
@@ -111,6 +99,8 @@ jQ(function($){
         clipboard.on('error', function(e) {
             console.log(e);
         });
+    } else if (website("pcauto")) {
+        newNode = document.createTextNode("#hf-pop {display: none !important}");
     }
 
     if (newNode !== undefined) {
