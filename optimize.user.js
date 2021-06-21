@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         去广告/去弹窗/优化
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      2.1
 // @description  去掉各个网站的登录弹窗等辣鸡信息，优化某些功能
 // @author       XanderYe
 // @require      http://lib.baomitu.com/clipboard.js/1.7.1/clipboard.min.js
@@ -9,6 +9,7 @@
 // @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/optimize.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        http*://www.zhihu.com/question/*
+// @match        http*://zhuanlan.zhihu.com/p/*
 // @match        http*://*.csdn.net/*
 // @match        http*://www.iqiyi.com/*.html
 // @match        http*://www.bilibili.com/*
@@ -24,7 +25,15 @@ var jQ = $.noConflict(true);
 jQ(function($){
     var newStyle = document.createElement("style");
     var newNode;
-    if (website("zhihu")) {
+    if (website("zhuanlan.zhihu")) {
+        // 知乎干掉登录弹窗、推荐图书
+        newNode = document.createTextNode("html {overflow: auto !important;} .Modal-backdrop, .MCNLinkCard {display: none !important} .Modal-closeIcon {fill: #8590a6 !important}");
+        // 监控登录窗，干掉2次弹窗
+        var signFlowModal = $("body .signFlowModal");
+        if (signFlowModal.length > 0) {
+            signFlowModal.parent().parent().remove();
+        }
+    } else if (website("zhihu")) {
         // 知乎干掉登录弹窗、推荐图书
         newNode = document.createTextNode("html {overflow: auto !important;} .Modal-backdrop, .MCNLinkCard {display: none !important} .Modal-closeIcon {fill: #8590a6 !important}");
         // 监控登录窗，干掉2次弹窗
