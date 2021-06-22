@@ -29,10 +29,13 @@ jQ(function($){
         // 知乎干掉登录弹窗、推荐图书
         newNode = document.createTextNode("html {overflow: auto !important;} .Modal-backdrop, .MCNLinkCard {display: none !important} .Modal-closeIcon {fill: #8590a6 !important}");
         // 监控登录窗，干掉2次弹窗
-        var signFlowModal = $("body .signFlowModal");
-        if (signFlowModal.length > 0) {
-            signFlowModal.parent().parent().remove();
-        }
+        var interval = setInterval(function () {
+            signFlowModal = $("body .signFlowModal");
+            if (signFlowModal.length > 0) {
+                signFlowModal.parent().parent().remove();
+                clearInterval(interval);
+            }
+        },100);
     } else if (website("zhihu")) {
         // 知乎干掉登录弹窗、推荐图书
         newNode = document.createTextNode("html {overflow: auto !important;} .Modal-backdrop, .MCNLinkCard {display: none !important} .Modal-closeIcon {fill: #8590a6 !important}");
