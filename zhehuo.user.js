@@ -12,11 +12,12 @@
 // ==/UserScript==
 
 var newStyle = document.createElement("style");
-var newNode = document.createTextNode(".denglutishi, .logobq, .zheceng, .zheceng2021 {display: none} .paofenjietu, #chart-wrapper {filter: unset !important} .sy{background-image: unset !important}");
+var newNode = document.createTextNode(".logobq {display: none} .paofenjietu, #chart-wrapper {filter: unset !important} .sy{background-image: unset !important}");
 newStyle.appendChild(newNode);
 document.head.appendChild(newStyle);
 
 var jQ = $.noConflict(true);
 jQ(function ($) {
+  $("div[class^='zheceng']").css("display", "none");
   $("div[class^='denglutishi']").css("display", "none");
 })
