@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         有驾对比增强
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  有驾对比增强，支持对比列表勾选车型对比
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
 // @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/youjia.user.js
 // @supportURL   https://www.xanderye.cn/
-// @match        http*://www.yoojia.com/s-*
+// @match        http*://www.yoojia.com/*
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_addStyle
@@ -18,19 +18,23 @@ jQ(function($){
 
   addCss();
   init();
+  clickClose();
 
   function init() {
-    let compareBtn = $(".fixed-box");
-    if (compareBtn.length > 0) {
-      compareBtn.bind("click", function () {
-        initBtn();
-      })
-      bindSelect();
-      bindContrast();
-    } else {
-      setTimeout(function () {
-        init();
-      }, 100);
+    if (location.pathname.startsWith("/s-")) {
+      let compareBtn = $(".fixed-box");
+      if (compareBtn.length > 0) {
+        compareBtn.bind("click", function () {
+          initBtn();
+        })
+        bindSelect();
+        bindContrast();
+        clickClose();
+      } else {
+        setTimeout(function () {
+          init();
+        }, 100);
+      }
     }
   }
 
@@ -39,6 +43,20 @@ jQ(function($){
     bindEmpty();
     initCheckbox();
     bindSelect();
+  }
+
+  function clickClose() {
+    if (location.pathname.startsWith("/parameter/")) {
+      let closeBtn = $(".close");
+      console.log(closeBtn);
+      if (closeBtn.length > 0) {
+        closeBtn.click();
+      } else {
+        setTimeout(function () {
+          clickClose();
+        }, 100);
+      }
+    }
   }
 
   function initCompareBtn() {
