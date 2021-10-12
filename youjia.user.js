@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         有驾对比增强
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  有驾对比增强，支持对比列表勾选车型对比
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
@@ -46,7 +46,7 @@ jQ(function($){
   }
 
   function clickClose() {
-    if (location.pathname.startsWith("/parameter/")) {
+    if (location.pathname.startsWith("/parameter/") || location.pathname.startsWith("/constrast")) {
       let closeBtn = $(".close");
       console.log(closeBtn);
       if (closeBtn.length > 0) {
