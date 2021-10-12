@@ -47,8 +47,7 @@ jQ(function($){
 
   function clickClose() {
     if (location.pathname.startsWith("/parameter/") || location.pathname.startsWith("/constrast")) {
-      let closeBtn = $(".close");
-      console.log(closeBtn);
+      let closeBtn = $(".down-load-bar .close");
       if (closeBtn.length > 0) {
         closeBtn.click();
       } else {
