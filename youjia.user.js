@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         有驾对比增强
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  有驾对比增强，支持对比列表勾选车型对比
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
@@ -73,6 +73,9 @@ jQ(function($){
       let list = data.Result.arrData.list;
       let selectPDoms = $(".selected .selected-item");
       for (let i in selectPDoms) {
+        if (i >= list.length) {
+          return;
+        }
         let selectPDom = selectPDoms.eq(i);
         if (selectPDom.length > 0 && selectPDom.find(".select-box").length === 0) {
           let modelId = list[i].modelId;
