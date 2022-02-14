@@ -9,7 +9,6 @@
 // @require      https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
 // @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/optimize.user.js
 // @supportURL   https://www.xanderye.cn/
-// @match        http*://www.zhihu.com/question/*
 // @match        http*://zhuanlan.zhihu.com/p/*
 // @match        http*://*.csdn.net/*
 // @match        http*://www.iqiyi.com/*.html
@@ -18,7 +17,6 @@
 // @match        http*://jingyan.baidu.com/article/*
 // @match        http*://dnf.qq.com/gift.shtml
 // @match        http*://leetcode-cn.com/problems/*
-// @match        http*://www.770dy.com/*/*.html
 // @match        http*://*.pcauto.com.cn/*
 // ==/UserScript==
 
