@@ -7,7 +7,7 @@
 // @require      http://lib.baomitu.com/clipboard.js/1.7.1/clipboard.min.js
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
 // @require      https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
-// @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/optimize.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/xanderye/tampermonkey/optimize.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        http*://zhuanlan.zhihu.com/p/*
 // @match        http*://*.csdn.net/*

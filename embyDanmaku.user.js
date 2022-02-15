@@ -7,7 +7,7 @@
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
 // @require      https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
 // @require      https://cdn.jsdelivr.net/npm/danmaku/dist/danmaku.min.js
-// @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/embyDanmaku.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/xanderye/tampermonkey/embyDanmaku.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        https://nas.xanderye.cn:8920/web/index.html
 // @grant        GM_xmlhttpRequest
