@@ -5,7 +5,7 @@
 // @description  无需登录即可下载插件
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
-// @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/pictureknow.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/XanderYe/userScript/pictureknow.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        http*://chrome.pictureknow.com/extension*
 // ==/UserScript==

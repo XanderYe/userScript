@@ -5,7 +5,7 @@
 // @description  咪咕音乐免费下载无损音乐
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
-// @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/migu.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/XanderYe/userScript/migu.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        http*://music.migu.cn/v3/music/player/audio
 // ==/UserScript==

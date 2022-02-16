@@ -7,9 +7,9 @@
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
 // @require      https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
 // @require      https://cdn.jsdelivr.net/npm/danmaku/dist/danmaku.min.js
-// @updateURL    https://cdn.jsdelivr.net/gh/xanderye/tampermonkey/embyDanmaku.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/XanderYe/userScript/embyDanmaku.user.js
 // @supportURL   https://www.xanderye.cn/
-// @match        https://nas.xanderye.cn:8920/web/index.html
+// @match        https://nas.XanderYe.cn:8920/web/index.html
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -171,7 +171,7 @@ jQ(function($){
   }
 
   function getDanmuUrl(videoUrl) {
-    let url = "https://tool.xanderye.cn/api/video/danmu";
+    let url = "https://tool.XanderYe.cn/api/video/danmu";
     GM_xmlhttpRequest({
       method: "POST",
       url: url,

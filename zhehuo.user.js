@@ -5,7 +5,7 @@
 // @description  这货怎么样破解收费，不用输入密码就能看
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
-// @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/zhehuo.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/XanderYe/userScript/zhehuo.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        *://www.xincanshu.com/*.html
 // @match        *://www.xincanshu.com/*/pk*

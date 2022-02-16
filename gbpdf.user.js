@@ -5,7 +5,7 @@
 // @description  支持部分国标文档网下载加密文档
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
-// @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/gbpdf.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/XanderYe/userScript/gbpdf.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        http*://c.gb688.cn/bzgk/gb/showGb*
 // @match        http*://jjg.spc.org.cn/resmea/view/stdonline

@@ -4,7 +4,7 @@
 // @version      0.2
 // @description  使视频网站在全屏后底栏缩小后还是能显示进度
 // @author       XanderYe
-// @updateURL    https://github.com/XanderYe/tampermonkey/raw/master/progress.user.js
+// @updateURL    https://cdn.jsdelivr.net/gh/XanderYe/userScript/progress.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        http*://www.iqiyi.com/*
 // @match        http*://v.qq.com/*
