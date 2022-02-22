@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         去广告/去弹窗/优化
 // @namespace    http://tampermonkey.net/
-// @version      2.6
+// @version      2.7
 // @description  去掉各个网站的登录弹窗等辣鸡信息，优化某些功能
 // @author       XanderYe
 // @require      http://lib.baomitu.com/clipboard.js/1.7.1/clipboard.min.js
@@ -40,7 +40,7 @@ jQ(function($){
         };
     } else if (website("csdn")) {
         // CSDN 隐藏登录弹窗 去除登录复制
-        newNode = document.createTextNode(".passport-container,.passport-login-container,#passportbox,.passport-login-mark,.leftPop,.opt-box,.signin, #csdn-redpack {display: none !important} .comment-list-box {max-height: none !important} .htmledit_views code ol li{height: 26px !important} code,pre {user-select: text!important}");
+        newNode = document.createTextNode(".passport-container,.passport-login-container,#passportbox,.passport-login-mark,.leftPop,.opt-box,.signin, #csdn-redpack {display: none !important} .comment-list-box {max-height: none !important} .htmledit_views code ol li{height: 26px !important} #content_views,code,pre {user-select: text!important}");
     } else if (website("iqiyi")) {
         // 爱奇艺
         newNode = document.createTextNode("div[templatetype=common_pause] {display: none !important}");
