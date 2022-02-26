@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         去广告/去弹窗/优化
 // @namespace    http://tampermonkey.net/
-// @version      2.7
+// @version      2.0.2
 // @description  去掉各个网站的登录弹窗等辣鸡信息，优化某些功能
 // @author       XanderYe
 // @require      http://lib.baomitu.com/clipboard.js/1.7.1/clipboard.min.js
@@ -47,6 +47,12 @@ jQ(function($){
     } else if (website("bilibili")) {
         // B站
         newNode = document.createTextNode(".gg-floor-module, #slide_ad, .gg-window .operate-card,.banner-card.b-wrap:nth-of-type(1) {display: none !important}");
+        // 复制后缀
+        [...document.querySelectorAll('*')].forEach(item=>{
+            item.oncopy = function(e) {
+                e.stopPropagation();
+            }
+        });
     }  else if (website("hupu")) {
         // 虎扑去除方向键上下页
         document.onkeydown = function(){}
