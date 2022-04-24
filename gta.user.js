@@ -70,6 +70,10 @@ jQ(function($){
           } else {
             reject("未查询到玩家，请检查昵称");
           }
+        },
+        error: function (err) {
+          console.log(err);
+          reject("查询错误");
         }
       })
     })
