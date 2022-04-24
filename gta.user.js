@@ -13,17 +13,55 @@
 
 let jQ = $.noConflict(true);
 jQ(function($){
+  let dotIndex = 0;
+  let userInfo = [];
+
   init();
 
   function init() {
-    const selectorOrFunction = "#compare-choose-wrap";
-    const callback = () => {
+    waitForKeyElements("#compare-choose-wrap", () => {
       let searchBtn = $("<a class='btn' href='#'>搜索</a>");
       searchBtn.css({"width": "10%", "margin": "8px 0 0 8px"});
       searchBtn.unbind().bind("click", addUser);
       $("#compare-choose-wrap h2").after(searchBtn);
+
+      $("#compare-select-wrap").find("a").unbind().bind("click", () => {
+       // 应用按钮事件
+      })
+    }, true);
+
+
+    waitForKeyElements("#compare-grid-slider", () => {
+      // 加载表格
+      bindDotChange();
+      changeDot();
+    }, true);
+  }
+
+  function bindDotChange() {
+    let dots = $("div.owl-dot");
+    for (let i = 0; i < dots.length; i++) {
+      dots.eq(i).unbind().bind("click", () => {
+        dotIndex = i;
+        changeDot();
+      });
     }
-    waitForKeyElements(selectorOrFunction, callback, true);
+    $("#compare-grid-slider .scicon-arrowbigleft").unbind().bind("click", () => {
+      if (dotIndex === 0) {
+        dotIndex = 4;
+      } else {
+        dotIndex -= 1;
+      }
+      changeDot();
+    });
+    $("#compare-grid-slider .scicon-arrowbigright").unbind().bind("click", () => {
+      if (dotIndex === 4) {
+        dotIndex = 0;
+      } else {
+        dotIndex += 1;
+      }
+      changeDot();
+    });
   }
 
 
@@ -48,6 +86,7 @@ jQ(function($){
       alert(err);
     });
   }
+
   function getRockstarId(nickname) {
     var cookie = document.cookie;
     var token = cookie.substring(cookie.indexOf("BearerToken") + 12);
@@ -70,5 +109,95 @@ jQ(function($){
         }
       })
     })
+  }
+
+  function changeDot() {
+    waitForKeyElements("#table-data-one", () => {
+      setTimeout(() => {
+        let firstLineName = $("#table-data-one").find("tbody tr").eq(0).find(".name").text().replace(/\s/g, "");
+        if ([0, 3].indexOf(dotIndex) > -1 && firstLineName !== "黑钱") {
+          getUserInfo();
+          appendBlackMoney();
+        }
+      }, 200);
+    }, false);
+  }
+
+  function getUserInfo() {
+    userInfo = [];
+    let data = SCSettings.Data;
+    if (data) {
+      for (let i = 0; i < data.HeaderRow.length; i++) {
+        userInfo[i] = {
+          "index": data.HeaderRow[i].Index,
+          "nickname": data.HeaderRow[i].Nickname,
+          "wallet": moneyStrToNum(data.Rows[2].Values[i].FormattedValue),
+          "bank": moneyStrToNum(data.Rows[3].Values[i].FormattedValue),
+          "totalEvc": moneyStrToNum(data.Rows[39].Values[i].FormattedValue),
+          "totalSvc": moneyStrToNum(data.Rows[40].Values[i].FormattedValue)
+        };
+        userInfo[i].blackMoney = userInfo[i].totalSvc + userInfo[i].wallet + userInfo[i].bank - userInfo[i].totalEvc;
+      }
+      console.log(userInfo);
+    }
+  }
+
+  function appendBlackMoney() {
+    let calcDom = '<tr><td class="descr"><div class="name">黑钱<p></p></div></td>';
+    for (let i = 0; i < userInfo.length; i++) {
+      let calcStr = moneyNumToStr(userInfo[i].blackMoney);
+      if (i === 0) {
+        calcDom += '<td class="active">';
+      } else {
+        calcDom += '<td>';
+      }
+      calcDom += '<div class="pos">' + calcStr + '</div></td>';
+    }
+    calcDom += '<td class="adduser"></td></tr>';
+    $("#table-data-one").find("tbody").prepend(calcDom);
+    let userInfoCopy = JSON.parse(JSON.stringify(userInfo));
+    userInfoCopy.sort((a, b) => {
+      return b.blackMoney - a.blackMoney;
+    })
+    for (let i = 0; i < userInfoCopy.length; i++) {
+      $("#table-data-one").find("tbody tr").eq(0).find(".pos").eq(userInfoCopy[i].index - 1).addClass("p" + (i + 1));
+    }
+  }
+
+  function moneyStrToNum(str) {
+    let money = parseFloat(str.substring(1, str.length - 1));
+    if (isNaN(money)) {
+      return 0;
+    }
+    let unit = str.substring((str.length - 1));
+    switch (unit) {
+      case "K":
+        money *= 1000;
+        break;
+      case "M":
+        money *= 1000000;
+        break;
+      case "B":
+        money *= 1000000000;
+        break;
+      default:
+        break;
+    }
+    return money;
+  }
+  
+  function moneyNumToStr(num) {
+    let unit = "";
+    if (num >= 100000000) {
+      num /= 100000000;
+      unit = "亿";
+    } else if (num >= 10000) {
+      num /= 10000;
+      unit = "万";
+    } else if (num >= 1000) {
+      num /= 1000;
+      unit = "千";
+    }
+    return "$" + num + unit;
   }
 })
