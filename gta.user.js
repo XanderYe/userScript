@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         GTA玩家信息获取
+// @name         GTA玩家信息对比
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  通过好友对比的方式获取不公开的玩家信息
+// @version      0.2
+// @description  可对比不公开的非好友玩家信息，并计算黑钱
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
 // @require      https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
@@ -13,7 +13,6 @@
 
 let jQ = $.noConflict(true);
 jQ(function($){
-  let dotIndex = 0;
   let userInfo = [];
 
   init();
@@ -24,44 +23,9 @@ jQ(function($){
       searchBtn.css({"width": "10%", "margin": "8px 0 0 8px"});
       searchBtn.unbind().bind("click", addUser);
       $("#compare-choose-wrap h2").after(searchBtn);
-
-      $("#compare-select-wrap").find("a").unbind().bind("click", () => {
-       // 应用按钮事件
-      })
     }, true);
 
-
-    waitForKeyElements("#compare-grid-slider", () => {
-      // 加载表格
-      bindDotChange();
-      changeDot();
-    }, true);
-  }
-
-  function bindDotChange() {
-    let dots = $("div.owl-dot");
-    for (let i = 0; i < dots.length; i++) {
-      dots.eq(i).unbind().bind("click", () => {
-        dotIndex = i;
-        changeDot();
-      });
-    }
-    $("#compare-grid-slider .scicon-arrowbigleft").unbind().bind("click", () => {
-      if (dotIndex === 0) {
-        dotIndex = 4;
-      } else {
-        dotIndex -= 1;
-      }
-      changeDot();
-    });
-    $("#compare-grid-slider .scicon-arrowbigright").unbind().bind("click", () => {
-      if (dotIndex === 4) {
-        dotIndex = 0;
-      } else {
-        dotIndex += 1;
-      }
-      changeDot();
-    });
+    tableChange();
   }
 
 
@@ -111,9 +75,17 @@ jQ(function($){
     })
   }
 
-  function changeDot() {
+  function tableChange() {
     waitForKeyElements("#table-data-one", () => {
       setTimeout(() => {
+        let dotIndex = 0;
+        let dots = $("div.owl-dot");
+        for (let i = 0; i < dots.length; i++) {
+          if (dots.eq(i).hasClass("active")) {
+            dotIndex = i;
+            break;
+          }
+        }
         let firstLineName = $("#table-data-one").find("tbody tr").eq(0).find(".name").text().replace(/\s/g, "");
         if ([0, 3].indexOf(dotIndex) > -1 && firstLineName !== "黑钱") {
           getUserInfo();
@@ -128,15 +100,17 @@ jQ(function($){
     let data = SCSettings.Data;
     if (data) {
       for (let i = 0; i < data.HeaderRow.length; i++) {
+        let totalEvcValue = data.Rows[39].Values[i].FormattedValue;
         userInfo[i] = {
           "index": data.HeaderRow[i].Index,
           "nickname": data.HeaderRow[i].Nickname,
+          "unit": totalEvcValue.substring(totalEvcValue.length - 1),
           "wallet": moneyStrToNum(data.Rows[2].Values[i].FormattedValue),
           "bank": moneyStrToNum(data.Rows[3].Values[i].FormattedValue),
-          "totalEvc": moneyStrToNum(data.Rows[39].Values[i].FormattedValue),
+          "totalEvc": moneyStrToNum(totalEvcValue),
           "totalSvc": moneyStrToNum(data.Rows[40].Values[i].FormattedValue)
         };
-        userInfo[i].blackMoney = userInfo[i].totalSvc + userInfo[i].wallet + userInfo[i].bank - userInfo[i].totalEvc;
+        userInfo[i].blackMoney = moneyNumToStr(userInfo[i].totalSvc + userInfo[i].wallet + userInfo[i].bank - userInfo[i].totalEvc, userInfo[i].unit);
       }
       console.log(userInfo);
     }
@@ -145,7 +119,7 @@ jQ(function($){
   function appendBlackMoney() {
     let calcDom = '<tr><td class="descr"><div class="name">黑钱<p></p></div></td>';
     for (let i = 0; i < userInfo.length; i++) {
-      let calcStr = moneyNumToStr(userInfo[i].blackMoney);
+      let calcStr = userInfo[i].blackMoney;
       if (i === 0) {
         calcDom += '<td class="active">';
       } else {
@@ -157,7 +131,7 @@ jQ(function($){
     $("#table-data-one").find("tbody").prepend(calcDom);
     let userInfoCopy = JSON.parse(JSON.stringify(userInfo));
     userInfoCopy.sort((a, b) => {
-      return b.blackMoney - a.blackMoney;
+      return moneyStrToNum(b.blackMoney) - moneyStrToNum(a.blackMoney);
     })
     for (let i = 0; i < userInfoCopy.length; i++) {
       $("#table-data-one").find("tbody tr").eq(0).find(".pos").eq(userInfoCopy[i].index - 1).addClass("p" + (i + 1));
@@ -169,7 +143,7 @@ jQ(function($){
     if (isNaN(money)) {
       return 0;
     }
-    let unit = str.substring((str.length - 1));
+    let unit = str.substring(str.length - 1);
     switch (unit) {
       case "K":
         money *= 1000;
@@ -186,18 +160,20 @@ jQ(function($){
     return money;
   }
   
-  function moneyNumToStr(num) {
-    let unit = "";
-    if (num >= 100000000) {
-      num /= 100000000;
-      unit = "亿";
-    } else if (num >= 10000) {
-      num /= 10000;
-      unit = "万";
-    } else if (num >= 1000) {
-      num /= 1000;
-      unit = "千";
+  function moneyNumToStr(num, unit) {
+    switch (unit) {
+      case "K":
+        num /= 1000;
+        break;
+      case "M":
+        num /= 1000000;
+        break;
+      case "B":
+        num /= 1000000000;
+        break;
+      default:
+        break;
     }
-    return "$" + num + unit;
+    return "$" + num.toFixed(1) + unit;
   }
 })
