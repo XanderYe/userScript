@@ -2,19 +2,23 @@
 // @name         GTA玩家信息对比
 // @namespace    http://tampermonkey.net/
 // @version      0.2
-// @description  可对比不公开的非好友玩家信息，并计算黑钱
+// @description  可对比不公开的非好友玩家信息，并计算收支差距
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
+// @require      https://lib.baomitu.com/echarts/5.3.2-rc.1/echarts.min.js
 // @require      https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
 // @updateURL    https://cdn.jsdelivr.net/gh/XanderYe/userScript/gta.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        https://socialclub.rockstargames.com/games/gtav/pc/career/overview/gtaonline
+// @grant        GM_addStyle
 // ==/UserScript==
 
 let jQ = $.noConflict(true);
 jQ(function($){
   let userInfo = [];
+  let chart = null;
 
+  addStyle();
   init();
 
   function init() {
@@ -91,7 +95,7 @@ jQ(function($){
           }
         }
         let firstLineName = $("#table-data-one").find("tbody tr").eq(0).find(".name").text().replace(/\s/g, "");
-        if ([0, 3].indexOf(dotIndex) > -1 && firstLineName !== "黑钱") {
+        if ([0, 3].indexOf(dotIndex) > -1 && firstLineName !== "收支差距") {
           getUserInfo();
           appendBlackMoney();
         }
@@ -112,38 +116,168 @@ jQ(function($){
           "wallet": moneyStrToNum(data.Rows[2].Values[i].FormattedValue),
           "bank": moneyStrToNum(data.Rows[3].Values[i].FormattedValue),
           "totalEvc": moneyStrToNum(totalEvcValue),
-          "totalSvc": moneyStrToNum(data.Rows[40].Values[i].FormattedValue)
+          "totalSvc": moneyStrToNum(data.Rows[40].Values[i].FormattedValue),
+          "moneyEarnJobs": moneyStrToNum(data.Rows[32].Values[i].FormattedValue),
+          "moneyEarnSellingVh": moneyStrToNum(data.Rows[33].Values[i].FormattedValue),
+          "moneyEarnBetting": moneyStrToNum(data.Rows[34].Values[i].FormattedValue),
+          "moneyEarnGoodSport": moneyStrToNum(data.Rows[35].Values[i].FormattedValue),
+          "moneyEarnPickUp": moneyStrToNum(data.Rows[36].Values[i].FormattedValue),
+          "moneyEarnJobShared": moneyStrToNum(data.Rows[38].Values[i].FormattedValue)
         };
-        userInfo[i].blackMoney = moneyNumToStr(userInfo[i].totalSvc + userInfo[i].wallet + userInfo[i].bank - userInfo[i].totalEvc, userInfo[i].unit);
+        userInfo[i].blackMoney = userInfo[i].totalSvc + userInfo[i].wallet + userInfo[i].bank - userInfo[i].totalEvc;
       }
       console.log(userInfo);
     }
   }
 
   function appendBlackMoney() {
-    let calcDom = '<tr><td class="descr"><div class="name">黑钱<p></p></div></td>';
+    let calcDom = '<tr><td class="descr"><div class="name">收支差距（点击金额查看详情）<p></p></div></td>';
     for (let i = 0; i < userInfo.length; i++) {
-      let calcStr = userInfo[i].blackMoney;
+      let calcStr = moneyNumToStr(userInfo[i].blackMoney, userInfo[i].unit);
       if (i === 0) {
         calcDom += '<td class="active">';
       } else {
         calcDom += '<td>';
       }
-      calcDom += '<div class="pos">' + calcStr + '</div></td>';
+      calcDom += '<div class="pos" style="cursor: pointer">' + calcStr + '</div></td>';
     }
     calcDom += '<td class="adduser"></td></tr>';
     $("#table-data-one").find("tbody").prepend(calcDom);
     let userInfoCopy = JSON.parse(JSON.stringify(userInfo));
     userInfoCopy.sort((a, b) => {
-      return moneyStrToNum(b.blackMoney) - moneyStrToNum(a.blackMoney);
+      return b.blackMoney - a.blackMoney;
     })
     for (let i = 0; i < userInfoCopy.length; i++) {
-      $("#table-data-one").find("tbody tr").eq(0).find(".pos").eq(userInfoCopy[i].index - 1).addClass("p" + (i + 1));
+      let dom = $("#table-data-one").find("tbody tr").eq(0).find(".pos").eq(userInfoCopy[i].index - 1);
+      dom.addClass("p" + (i + 1));
+      dom.unbind().bind("click", function () {
+        showChart(userInfoCopy[i]);
+      })
     }
   }
 
+  function showChart(user) {
+    let parent = $("<div id='gta-chart-mask'></div>");
+    var div = $("<div id='gta-chart-container'></div>");
+    div.append("<div id='gta-chart'></div>");
+    parent.append(div);
+    $("body").append(parent);
+    let container = document.getElementById("gta-chart");
+    chart = echarts.init(container);
+    let option = {
+      title: {
+        text: '收支分析',
+        left: 'center',
+        textStyle: {
+          color: 'white'
+        }
+      },
+      legend: {
+        orient: 'horizontal',
+        x:'center',
+        y:'5%',
+        left: 'center',
+        padding: [5,5,10,5],
+        textStyle: {
+          color: 'white'
+        }
+      },
+      graphic: {
+        type: "text",
+        left: '45%',
+        top: '46%',
+        style: {
+          text: '收入来源\n' + moneyNumToStr(user.totalEvc, user.unit),
+          textAlign: 'center',
+          fontSize: '20',
+          fontWeight: 'bold',
+          fill: 'white'
+        }
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: (params) => {
+          return `<div><p>${params.name}</p><p>${moneyNumToStr(params.value, user.unit)}</p></div>`;
+        }
+      },
+      series: [
+        {
+          name: '收入来源',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          label: {
+            textStyle: {
+              color: 'white'
+            },
+            formatter: (params) => {
+              return params.name + "\n" + moneyNumToStr(params.value, user.unit);
+            }
+          },
+          data: [
+            { value: user.moneyEarnJobs, name: '差事', itemStyle: {color:'#f3903b'} },
+            { value: user.moneyEarnBetting, name: '下注', itemStyle: {color:'#f4c34a'} },
+            { value: user.moneyEarnJobShared, name: '分成', itemStyle: {color:'#62b1dc'} },
+            { value: user.moneyEarnSellingVh, name: '车辆销售额', itemStyle: {color:'#b65657'} },
+            { value: user.moneyEarnGoodSport, name: '表现良好奖励', itemStyle: {color:'#f3903b'} },
+            { value: user.moneyEarnPickUp, name: '拾取金额', itemStyle: {color:'#cb3694'} },
+            { value: user.blackMoney, name: '收支差距', itemStyle: {color:'#fe0000'} }
+          ],
+          labelLine: {
+            show: true,
+            length:20,
+            length2: 50,
+          },
+        }
+      ]
+    };
+    chart.setOption(option);
+    $("#gta-chart-container").unbind().bind("click", function (e) {
+      e.stopPropagation();
+    });
+    $("#gta-chart-mask").unbind().bind("click", function () {
+      closeChart();
+    });
+  }
+
+  function closeChart() {
+    if (chart != null) {
+      echarts.dispose(chart);
+      chart = null;
+    }
+    $("#gta-chart-mask").remove();
+  }
+
+  function addStyle() {
+    let style = `
+    #gta-chart-mask {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 99;
+      }
+      #gta-chart-container {
+        width: 800px;
+        height: 600px;
+        border-radius: 5px;
+        position: fixed;
+        top: calc(50% - 300px);
+        left: calc(50% - 400px);
+        background: rgba(0,0,0,.87);
+        z-index: 100;
+      }
+      #gta-chart {
+        width: 100%;
+        height: 100%;
+      }
+    `;
+    GM_addStyle(style);
+  }
+
   function moneyStrToNum(str) {
-    let money = parseFloat(str.substring(1, str.length - 1));
+    str = str.substring(1);
+    let money = parseFloat(str.substring(0, str.length - 1));
     if (isNaN(money)) {
       return 0;
     }
@@ -159,6 +293,7 @@ jQ(function($){
         money *= 1000000000;
         break;
       default:
+        money = parseFloat(str.replace(",", ""));
         break;
     }
     return money;
