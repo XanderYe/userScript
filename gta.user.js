@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GTA玩家信息对比
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  可对比不公开的非好友玩家信息，并计算收支差距
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
@@ -124,6 +124,8 @@ jQ(function($){
           "moneyEarnPickUp": moneyStrToNum(data.Rows[36].Values[i].FormattedValue),
           "moneyEarnJobShared": moneyStrToNum(data.Rows[38].Values[i].FormattedValue)
         };
+        userInfo[i].unknownSource = userInfo[i].totalEvc - (userInfo[i].moneyEarnJobs + userInfo[i].moneyEarnSellingVh
+          + userInfo[i].moneyEarnBetting + userInfo[i].moneyEarnGoodSport + userInfo[i].moneyEarnPickUp + userInfo[i].moneyEarnJobShared);
         userInfo[i].blackMoney = userInfo[i].totalSvc + userInfo[i].wallet + userInfo[i].bank - userInfo[i].totalEvc;
       }
       console.log(userInfo);
@@ -187,7 +189,7 @@ jQ(function($){
         left: '45%',
         top: '46%',
         style: {
-          text: '收入来源\n' + moneyNumToStr(user.totalEvc, user.unit),
+          text: '收入来源\n' + moneyNumToStr(user.totalEvc + user.blackMoney),
           textAlign: 'center',
           fontSize: '20',
           fontWeight: 'bold',
@@ -196,8 +198,12 @@ jQ(function($){
       },
       tooltip: {
         trigger: 'item',
+        extraCssText: 'width:300px; white-space:pre-wrap',
         formatter: (params) => {
-          return `<div><p>${params.name}</p><p>${moneyNumToStr(params.value, user.unit)}</p></div>`;
+          let total = user.totalEvc + user.blackMoney;
+          let percent = params.value / total * 100;
+          return `<div><p>${params.name}：${moneyNumToStr(params.value)}（${percent.toFixed(2)}%）</p>
+            <p>${params.data.description}</p></div>`;
         }
       },
       series: [
@@ -210,17 +216,18 @@ jQ(function($){
               color: 'white'
             },
             formatter: (params) => {
-              return params.name + "\n" + moneyNumToStr(params.value, user.unit);
+              return params.name + "\n" + moneyNumToStr(params.value);
             }
           },
           data: [
-            { value: user.moneyEarnJobs, name: '差事', itemStyle: {color:'#f3903b'} },
-            { value: user.moneyEarnBetting, name: '下注', itemStyle: {color:'#f4c34a'} },
-            { value: user.moneyEarnJobShared, name: '分成', itemStyle: {color:'#62b1dc'} },
-            { value: user.moneyEarnSellingVh, name: '车辆销售额', itemStyle: {color:'#b65657'} },
-            { value: user.moneyEarnGoodSport, name: '表现良好奖励', itemStyle: {color:'#f3903b'} },
-            { value: user.moneyEarnPickUp, name: '拾取金额', itemStyle: {color:'#cb3694'} },
-            { value: user.blackMoney, name: '收支差距', itemStyle: {color:'#fe0000'} }
+            { value: user.moneyEarnJobs, name: '差事', description: '游戏内差事收入，包括各种类型的联系人差事、抢劫等收入', itemStyle: {color:'#f3903b'} },
+            { value: user.moneyEarnBetting, name: '下注', description: '游戏内赌博的收入，主要来源是名钻赌场的下注收入和筹码套现', itemStyle: {color:'#f4c34a'} },
+            { value: user.moneyEarnJobShared, name: '分成', description: '早期完成差事后获得的收入可以分享给别人，可以认为17年以后不再存在获得此项收入的方式', itemStyle: {color:'#62b1dc'} },
+            { value: user.moneyEarnSellingVh, name: '车辆销售额', description: '出售街车和个人载具（购买和改装的六折）的收入', itemStyle: {color:'#b65657'} },
+            { value: user.moneyEarnGoodSport, name: '表现良好奖励', description: '游戏内单战局满一天且玩家状态为表现良好时能收到2000', itemStyle: {color:'#f3903b'} },
+            { value: user.moneyEarnPickUp, name: '拾取金额', description: '', itemStyle: {color:'#cb3694'} },
+            { value: user.unknownSource, name: '未记录来源收入', description: '未列出、查询服务未登记的收入来源。包括但不限于部分战局活动和另一角色活动', itemStyle: {color:'#72ccff'} },
+            { value: user.blackMoney, name: '收支差距', description: 'R星不会将购买的鲨鱼卡和客服对金钱的操作计入总收入、部分时段的某些收入也不会计入统计、官方部分在线活动奖励未被统计。修改器篡改数据和卡分红也会产生收支差距！有一定数量的收支差距或者说黑钱（常见标准为10-30M）很正常', itemStyle: {color:'#fe0000'} }
           ],
           labelLine: {
             show: true,
@@ -300,6 +307,17 @@ jQ(function($){
   }
   
   function moneyNumToStr(num, unit) {
+    if (!unit) {
+      if (num > 1000000000) {
+        unit = "B";
+      } else if (num > 1000000) {
+        unit = "M";
+      } else if (num > 1000) {
+        unit = "K";
+      } else {
+        unit = "";
+      }
+    }
     switch (unit) {
       case "K":
         num /= 1000;
