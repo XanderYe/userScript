@@ -69,6 +69,41 @@ jQ(function($){
             "iqiyi": () => {
                 // 爱奇艺
                 newNode = document.createTextNode("div[templatetype=common_pause] {display: none !important}");
+                selectorOrFunction = ".iqp-contrls-right";
+                callback = () => {
+                    if ($(".iqp-player-innerlayer .iqp-btn.iqp-btn-webscreen").length > 0) {
+                        return;
+                    }
+                    var webScreenBtn = `<iqpdiv class="iqp-btn iqp-btn-webscreen" data-player-hook="webfullenter"> 
+                                  <svg id="iqp-btn-webscreen-in" class="iqp-icon iqp-icon-webscreen-inner iqp-icon-webscreen-inner-enter" aria-hidden="true"> 
+                                    <use class="iqp-svg-symbol" xlink:href="#iqp-svg-webscreen-inner-enter"></use> 
+                                  </svg> 
+                                  <svg id="iqp-btn-webscreen-out" class="iqp-icon iqp-icon-webscreen-inner iqp-icon-webscreen-inner-exit" aria-hidden="true" style="display: none"> 
+                                    <use class="iqp-svg-symbol" xlink:href="#iqp-svg-webscreen-inner-exit"></use> 
+                                  </svg>
+                                </iqpdiv>`;
+                    $(".iqp-player-innerlayer .iqp-btn.iqp-btn-fullscreen").after(webScreenBtn);
+                    $(".iqp-player-innerlayer").on("click", "#iqp-btn-webscreen-in", function () {
+                        $("#iqp-btn-webscreen-in").hide();
+                        $("#iqp-btn-webscreen-out").show();
+                        $(".iqp-player").addClass("iqp-web-screen");
+                        $("#block-A").hide();
+                    })
+                    $(".iqp-player-innerlayer").on("click", "#iqp-btn-webscreen-out", function () {
+                        $("#iqp-btn-webscreen-in").show();
+                        $("#iqp-btn-webscreen-out").hide();
+                        $(".iqp-player").removeClass("iqp-web-screen");
+                        $("#block-A").show();
+                    })
+                    document.onkeydown = function(event){
+                        if (event.key === "Escape") {
+                            $("#iqp-btn-webscreen-in").show();
+                            $("#iqp-btn-webscreen-out").hide();
+                            $(".iqp-player").removeClass("iqp-web-screen");
+                            $("#block-A").show();
+                        }
+                    }
+                };
             },
             "bilibili": () => {
                 // B站
