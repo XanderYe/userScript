@@ -16,7 +16,7 @@
   var host = location.host;
   var barNode;
   if (host.indexOf("iqiyi") > -1) {
-    barNode = document.createTextNode(".iqp-bottom-hide .iqp-progress,.iqp-bottom-hide .iqp-progress .iqp-progress-bar {height: 120% !important;}");
+    barNode = document.createTextNode(".iqp-bottom-hide .iqp-progress,.iqp-bottom-hide .iqp-progress .iqp-progress-bar {height: 160% !important;}");
   } else if (host.indexOf("v.qq") > -1) {
     barNode = document.createTextNode(".txp_autohide .txp_bottom {opacity: 1 !important; bottom: -50px !important}");
   } else if (host.indexOf("youku") > -1) {
