@@ -5,8 +5,6 @@
 // @description  支持部分国标文档网下载加密文档
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
-// @require      https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
-// @updateURL    https://cdn.jsdelivr.net/gh/XanderYe/userScript/gbpdf.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        http*://c.gb688.cn/bzgk/gb/showGb*
 // @match        http*://jjg.spc.org.cn/resmea/standard/*
@@ -137,3 +135,14 @@ jQ(function($){
     waitForKeyElements(selectorOrFunction, callback, waitOnce);
   }
 })
+
+/**
+ * @description waitForKeyElements.js v1.2
+ * @author CoeJoder
+ * @param selectorOrFunction
+ * @param callback
+ * @param waitOnce
+ * @param interval
+ * @param maxIntervals
+ */
+function waitForKeyElements(selectorOrFunction,callback,waitOnce,interval,maxIntervals){if(typeof waitOnce==="undefined"){waitOnce=true;}if(typeof interval==="undefined"){interval=300;}if(typeof maxIntervals==="undefined"){maxIntervals=-1;}var targetNodes=(typeof selectorOrFunction==="function")?selectorOrFunction():document.querySelectorAll(selectorOrFunction);var targetsFound=targetNodes&&targetNodes.length>0;if(targetsFound){targetNodes.forEach(function(targetNode){var attrAlreadyFound="data-userscript-alreadyFound";var alreadyFound=targetNode.getAttribute(attrAlreadyFound)||false;if(!alreadyFound){var cancelFound=callback(targetNode);if(cancelFound){targetsFound=false;}else{targetNode.setAttribute(attrAlreadyFound,true);}}});}if(maxIntervals!==0&&!(targetsFound&&waitOnce)){maxIntervals-=1;setTimeout(function(){waitForKeyElements(selectorOrFunction,callback,waitOnce,interval,maxIntervals);},interval);}}

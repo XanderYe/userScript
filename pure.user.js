@@ -6,14 +6,12 @@
 // @author       XanderYe
 // @require      http://lib.baomitu.com/clipboard.js/1.7.1/clipboard.min.js
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
-// @require      https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
-// @updateURL    https://cdn.jsdelivr.net/gh/XanderYe/userScript/pure.user.js
 // @supportURL   https://www.xanderye.cn/
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @match        http*://zhuanlan.zhihu.com/p/*
 // @match        http*://*.csdn.net/*
-// @match        http*://www.iqiyi.com/*.html
+// @match        http*://www.iqiyi.com/*.html*
 // @match        http*://www.bilibili.com/*
 // @match        http*://bbs.hupu.com/*.html
 // @match        http*://jingyan.baidu.com/article/*
@@ -166,3 +164,14 @@ jQ(function($){
         waitForKeyElements(selectorOrFunction, callback, waitOnce);
     }
 })
+
+/**
+ * @description waitForKeyElements.js v1.2
+ * @author CoeJoder
+ * @param selectorOrFunction
+ * @param callback
+ * @param waitOnce
+ * @param interval
+ * @param maxIntervals
+ */
+function waitForKeyElements(selectorOrFunction,callback,waitOnce,interval,maxIntervals){if(typeof waitOnce==="undefined"){waitOnce=true;}if(typeof interval==="undefined"){interval=300;}if(typeof maxIntervals==="undefined"){maxIntervals=-1;}var targetNodes=(typeof selectorOrFunction==="function")?selectorOrFunction():document.querySelectorAll(selectorOrFunction);var targetsFound=targetNodes&&targetNodes.length>0;if(targetsFound){targetNodes.forEach(function(targetNode){var attrAlreadyFound="data-userscript-alreadyFound";var alreadyFound=targetNode.getAttribute(attrAlreadyFound)||false;if(!alreadyFound){var cancelFound=callback(targetNode);if(cancelFound){targetsFound=false;}else{targetNode.setAttribute(attrAlreadyFound,true);}}});}if(maxIntervals!==0&&!(targetsFound&&waitOnce)){maxIntervals-=1;setTimeout(function(){waitForKeyElements(selectorOrFunction,callback,waitOnce,interval,maxIntervals);},interval);}}

@@ -5,9 +5,7 @@
 // @description  使用B站弹幕源，让Emby也显示弹幕
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
-// @require      https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.2/waitForKeyElements.js
-// @require      https://cdn.jsdelivr.net/npm/danmaku/dist/danmaku.min.js
-// @updateURL    https://cdn.jsdelivr.net/gh/XanderYe/userScript/embyDanmaku.user.js
+// @require      https://unpkg.com/danmaku@2.0.3/dist/danmaku.min.js
 // @supportURL   https://www.xanderye.cn/
 // @match        https://nas.XanderYe.cn:8920/web/index.html
 // @grant        GM_xmlhttpRequest
@@ -369,3 +367,14 @@ jQ(function($){
 
   waitForKeyElements("video[class='htmlvideoplayer moveUpSubtitles']", init);
 })
+
+/**
+ * @description waitForKeyElements.js v1.2
+ * @author CoeJoder
+ * @param selectorOrFunction
+ * @param callback
+ * @param waitOnce
+ * @param interval
+ * @param maxIntervals
+ */
+function waitForKeyElements(selectorOrFunction,callback,waitOnce,interval,maxIntervals){if(typeof waitOnce==="undefined"){waitOnce=true;}if(typeof interval==="undefined"){interval=300;}if(typeof maxIntervals==="undefined"){maxIntervals=-1;}var targetNodes=(typeof selectorOrFunction==="function")?selectorOrFunction():document.querySelectorAll(selectorOrFunction);var targetsFound=targetNodes&&targetNodes.length>0;if(targetsFound){targetNodes.forEach(function(targetNode){var attrAlreadyFound="data-userscript-alreadyFound";var alreadyFound=targetNode.getAttribute(attrAlreadyFound)||false;if(!alreadyFound){var cancelFound=callback(targetNode);if(cancelFound){targetsFound=false;}else{targetNode.setAttribute(attrAlreadyFound,true);}}});}if(maxIntervals!==0&&!(targetsFound&&waitOnce)){maxIntervals-=1;setTimeout(function(){waitForKeyElements(selectorOrFunction,callback,waitOnce,interval,maxIntervals);},interval);}}

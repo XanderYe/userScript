@@ -5,7 +5,6 @@
 // @description  有驾对比增强，支持对比列表勾选车型对比
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
-// @updateURL    https://cdn.jsdelivr.net/gh/XanderYe/userScript/youjia.user.js
 // @supportURL   https://www.xanderye.cn/
 // @match        http*://www.yoojia.com/*
 // @grant        GM_getValue
