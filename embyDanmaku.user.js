@@ -121,7 +121,7 @@ jQ(function($){
   }
 
   function getVideoTitle() {
-    let titleDom = document.querySelector("h3[class='videoOsdParentTitle']");
+    let titleDom = document.querySelector("h3[class^='videoOsdParentTitle']");
     if (titleDom) {
       return titleDom.innerHTML;
     }
