@@ -61,6 +61,14 @@ jQ(function($){
                 };
             },
             "csdn": () => {
+                // 修改复制事件
+                $("#content_views").unbind("copy").bind("copy", (e) => {
+                    let text = window.getSelection().toString();
+                    if (text) {
+                        e.preventDefault();
+                        navigator.clipboard.writeText(text);
+                    }
+                });
                 // CSDN 隐藏登录弹窗 去除登录复制
                 newNode = document.createTextNode(".passport-container,.passport-login-container,#passportbox,.passport-login-mark,.leftPop,.opt-box,.signin, #csdn-redpack {display: none !important} .comment-list-box {max-height: none !important} .htmledit_views code ol li{height: 26px !important} #content_views,code,pre {user-select: text!important}");
             },
