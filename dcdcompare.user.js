@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         懂车帝增强对比
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  懂车帝对比支持自定义勾选列表中的车型
 // @author       XanderYe
 // @require      https://lib.baomitu.com/jquery/3.5.0/jquery.min.js
@@ -22,7 +22,13 @@ jQ(function($){
   function initBtn() {
 
     initCompareBtn();
-    waitForKeyElements(".new-pk-list", initCheckbox, true);
+    waitForKeyElements(() => {
+      const list = $("ul.list");
+      if (list && list.length > 0) {
+        return list.get(0).children;
+      }
+      return null;
+    }, initCheckbox, false);
   }
 
   function initCompareBtn() {
