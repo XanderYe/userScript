@@ -53,7 +53,7 @@ jQ(function($){
     let list = getPkList();
     for (let i in selectDoms) {
       if (i >= list.length) {
-        return;
+        break;
       }
       let selectDom = selectDoms.eq(i);
       if (selectDom.length > 0 && selectDom.find(".select-box").length === 0) {
@@ -68,6 +68,7 @@ jQ(function($){
       }
     }
     bindCheckbox();
+    bindCloseBtn();
   }
 
   function bindCheckbox() {
@@ -82,6 +83,14 @@ jQ(function($){
       changeCompareLink();
     });
     changeCompareLink();
+  }
+
+  function bindCloseBtn() {
+    $(".close-btn").unbind("click").bind("click", () => {
+      setTimeout(() => {
+        changeCompareLink();
+      }, 100);
+    });
   }
 
   function changeCompareLink() {
