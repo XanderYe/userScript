@@ -18,6 +18,7 @@
 // @match        http*://dnf.qq.com/gift.shtml
 // @match        http*://leetcode-cn.com/problems/*
 // @match        http*://*.pcauto.com.cn/*
+// @match        http*://www.ithome.com/0/*/*.htm
 
 // ==/UserScript==
 
@@ -141,6 +142,23 @@ jQ(function($){
             },
             "pcauto": () => {
                 newNode = document.createTextNode("#hf-pop {display: none !important}");
+            },
+            "ithome": () => {
+                selectorOrFunction = ".post-img-list";
+                waitOnce = false;
+                callback = () => {
+                    let imgList = $(".post-img-list .img-placeholder");
+                    for (let i = 0; i < imgList.length; i++) {
+                        let imgDom = imgList.eq(i);
+                        let encodedUrl = imgDom.attr("data-s");
+                        let url = atob(encodedUrl);
+                        imgDom.html(`<img src="${url}" style="width: 120px; cursor:zoom-in;" onclick="" />`);
+                    }
+                };
+                $("body").delegate(".img-placeholder", "click", function(n) {
+                    n.preventDefault();
+                    imageViewer.show(n.target, n.target.href, n.originalEvent);
+                });
             }
         };
         unsafeWindow.PureQAQ = {
