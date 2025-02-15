@@ -321,9 +321,15 @@ jQ(function($){
         num /= 1000;
         break;
       case "M":
+        if (Math.abs(num / 1000000) < 1) {
+          return moneyNumToStr(num, "K");
+        }
         num /= 1000000;
         break;
       case "B":
+        if (Math.abs(num / 1000000000) < 1) {
+          return moneyNumToStr(num, "M");
+        }
         num /= 1000000000;
         break;
       default:
